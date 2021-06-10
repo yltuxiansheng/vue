@@ -27,6 +27,7 @@ const weexFactoryPlugin = {
 
 const aliases = require('./alias')
 const resolve = p => {
+  // 根据路径中的前半部分去alias中找别名
   const base = p.split('/')[0]
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1))
@@ -121,11 +122,17 @@ const builds = {
   },
   // Runtime+compiler development build (Browser)
   'web-full-dev': {
+    // 入口文件 resove将括号内的路径转化为绝对路径
     entry: resolve('web/entry-runtime-with-compiler.js'),
+    // 出口 打包后的目标文件
     dest: resolve('dist/vue.js'),
+    // 模块化的方式
     format: 'umd',
+    // 打包方式 开发模式 或者 生产模式
     env: 'development',
+    // 别名
     alias: { he: './entity-decoder' },
+    // banner是文件头
     banner
   },
   // Runtime+compiler production build  (Browser)
@@ -214,7 +221,9 @@ const builds = {
 }
 
 function genConfig (name) {
+  // builds 是一个对象，他的 索引键值 为环境变量的值
   const opts = builds[name]
+  // 配置信息
   const config = {
     input: opts.entry,
     external: opts.external,
@@ -260,9 +269,12 @@ function genConfig (name) {
     value: name
   })
 
+  // 返回配置对象
   return config
 }
 
+// 判断环境变量是否有 TARGET
+// 如果有的话，使用 genConfig() 生成 rollup 配置文件
 if (process.env.TARGET) {
   module.exports = genConfig(process.env.TARGET)
 } else {

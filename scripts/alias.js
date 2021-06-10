@@ -1,5 +1,6 @@
 const path = require('path')
 
+// __dirname 获取当前文件所在的绝对路径
 const resolve = p => path.resolve(__dirname, '../', p)
 
 module.exports = {
